@@ -52,6 +52,13 @@ def info_stocks(country: str, type: str, date_from: str, date_to: str):
                     for pr in info["historical"]:
                         list_result.append(pr["close"])
                     dict_result[info["name"]] = list_result
+            elif int(fro[1]) == 12 and int(tos[1]) == 1 and int(tos[2]) - int(fro[2]) == 1:
+                dict_result[info["name"]] = {}
+                for pr in info["historical"]:
+                    if fro[1] in pr["date"]:
+                        dict_result[info["name"]][f"{pr['date'].split('/')[0]}/{fro[1]}/{fro[2][2:]}"] = pr["close"]
+                    elif tos[1] in pr["date"]:
+                        dict_result[info["name"]][f"{pr['date'].split('/')[0]}/{tos[1]}/{tos[2][2:]}"] = pr["close"]        
             else:
                 list_result = []
                 for pr in info["historical"]:
