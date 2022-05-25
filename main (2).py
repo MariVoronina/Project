@@ -130,7 +130,7 @@ def clicked2():
     plt.grid()  # выводим решётку (сетку)
     plt.title('Stock chart of '+ var10.get())
     plt.xlabel("Time interval", fontsize=14, fontweight="bold")
-    plt.ylabel("Stock value", fontsize=14, fontweight="bold")
+    plt.ylabel("Stock value, " + dict_currency[var10.get()], fontsize=14, fontweight="bold")
 
     df2 = pd.DataFrame(info_stocks(var11.get(), var20.get(), str(var30.get()), str(var40.get())),
                       columns=list(info_stocks(var11.get(), var20.get(), str(var30.get()), str(var40.get()))))
@@ -140,9 +140,10 @@ def clicked2():
     plt.grid()  # выводим решётку (сетку)
     plt.title('Stock chart of ' + var11.get())
     plt.xlabel("Time interval", fontsize=14, fontweight="bold")
-    plt.ylabel("Stock value", fontsize=14, fontweight="bold")
+    plt.ylabel("Stock value, " + dict_currency[var11.get()], fontsize=14, fontweight="bold")
 
     plt.show()
+    messagebox.showinfo('Summary', compare_stocks(var10.get(), var11.get(), var20.get(), str(var30.get()), str(var40.get())))
     print(var10.get(), var11.get(), var20.get(), str(var30.get()), str(var40.get()))
 
 
@@ -155,7 +156,7 @@ def clicked1():
     plt.grid()  # выводим решётку (сетку)
     plt.title('Stock chart of '+ var10.get())
     plt.xlabel("Time interval", fontsize=14, fontweight="bold")
-    plt.ylabel("Stock value", fontsize=14, fontweight="bold")
+    plt.ylabel("Stock value, " + dict_currency[var10.get()], fontsize=14, fontweight="bold")
     plt.show()
     print(var1.get(), var2.get(), str(var3.get()), str(var4.get()))
 
