@@ -87,9 +87,15 @@ def compare_stocks(country_1: str, country_2: str, type: str, date_from: str, da
         comp_1 = 0
         comp_2 = 0
         for i in info_1.keys():
-            comp_1 += round(statistics.mean(info_1[i]) * dict_transfer[dict_currency[country_1]], 2)
+            if type(info_1[i]) is dict:
+                comp_1 += round(statistics.mean(info_1[i].values()) * dict_transfer[dict_currency[country_1]], 2)
+            else:
+                comp_1 += round(statistics.mean(info_1[i]) * dict_transfer[dict_currency[country_1]], 2)
         for i in info_2.keys():
-            comp_2 += round(statistics.mean(info_2[i]) * dict_transfer[dict_currency[country_2]], 2)
+            if type(info_2[i]) is dict:
+                comp_2 += round(statistics.mean(info_2[i].values()) * dict_transfer[dict_currency[country_2]], 2)
+            else:
+                comp_2 += round(statistics.mean(info_2[i]) * dict_transfer[dict_currency[country_2]], 2)
         if comp_1 > comp_2:
             return f"The stocks of {country_1} are more beneficial than the stocks of {country_2}"
         elif comp_1 < comp_2:
