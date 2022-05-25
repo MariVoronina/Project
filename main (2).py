@@ -3,6 +3,7 @@ from tkinter.ttk import Combobox
 from tkinter.ttk import Checkbutton
 from tkinter.ttk import Radiobutton
 from tkinter import Menu
+from tkinter import messagebox
 from tkinter import ttk
 from tkinter.ttk import Notebook, Style
 import matplotlib.pyplot as plt
@@ -16,7 +17,7 @@ import statistics
 
 
 types = ["Banks", "Biotechnology", "Cars", "Hotels", "IT", "Entertainments", "Clothes", "Food"]
-countries = ["United States", "Russia", "China", "United Kingdom", "France", "Japan"]
+countries = ["United States", "Russia", "China", "France", "Japan"]
 dict_types = {"Banks": "1", "Biotechnology": "2", "Cars": "3", "Hotels": "4", "IT": "5", "Entertainments": "6",
               "Clothes": "7", "Food": "8"}
 dict_countries = {"United States": "1", "Russia": "2", "China": "3", "France": "4", "Japan": "5"}
@@ -116,53 +117,47 @@ def company_description(company: str):
 
 
 
-def clicked3():
-    fig, ax = plt.subplots()
-    x = np.linspace(-5, 5, 25)
-    y1 = x ** 2
-    y2 = np.sin(x)
-    y3 = 5 * x
-    y4 = - x / 5
-    ax.plot(x, y1)
-    ax.plot(x, y2)
-    ax.plot(x, y3)
-    ax.plot(x, y4)
-    plt.xlabel("Временной промежуток", fontsize=14, fontweight="bold")
-    plt.ylabel("Стоимость акции", fontsize=14, fontweight="bold")
-    plt.show()
-
-types = ["Banks", "Biotechnology", "Cars", "Hotels", "IT", "Entertainments", "Clothes", "Food"]
-countries = ["United States", "Russia", "China", "United Kingdom", "France", "Japan"]
-
 
 import tkinter as tk
 from tkinter import ttk
 
 
 def clicked2():
-	print(var10.get())
-	print(var11.get())
-	print(var20.get())
-	print(var30.get())
-	print(var40.get())
+    df1 = pd.DataFrame(info_stocks(var10.get(), var20.get(), str(var30.get()), str(var40.get())),
+                      columns=list(info_stocks(var10.get(), var20.get(), str(var30.get()), str(var40.get()))))
+    df1.plot(y=list(info_stocks(var10.get(), var20.get(),  str(var30.get()), str(var40.get())))).patch.set_facecolor('antiquewhite')
+    plt.gcf().canvas.set_window_title("Chart")  # меняем заголовок
+    plt.grid()  # выводим решётку (сетку)
+    plt.title('Stock chart of '+ var10.get())
+    plt.xlabel("Time interval", fontsize=14, fontweight="bold")
+    plt.ylabel("Stock value", fontsize=14, fontweight="bold")
+
+    df2 = pd.DataFrame(info_stocks(var11.get(), var20.get(), str(var30.get()), str(var40.get())),
+                      columns=list(info_stocks(var11.get(), var20.get(), str(var30.get()), str(var40.get()))))
+    df2.plot(y=list(info_stocks(var11.get(), var20.get(), str(var30.get()), str(var40.get())))).patch.set_facecolor(
+        'antiquewhite')
+    plt.gcf().canvas.set_window_title("Chart")  # меняем заголовок
+    plt.grid()  # выводим решётку (сетку)
+    plt.title('Stock chart of ' + var11.get())
+    plt.xlabel("Time interval", fontsize=14, fontweight="bold")
+    plt.ylabel("Stock value", fontsize=14, fontweight="bold")
+
+    plt.show()
+    print(var10.get(), var11.get(), var20.get(), str(var30.get()), str(var40.get()))
+
 
 
 def clicked1():
-    #df = pd.DataFrame(info_stocks(var1.get(), var2.get(), str(var3.get()), str(var4.get())),
-    #                  columns=list(info_stocks(var1.get(), var2.get(), str(var3.get()), str(var4.get()))))
-    #print(df)
-    #df.plot(y=list(info_stocks(var1.get(), var2.get(),  str(var3.get()), str(var4.get())))).patch.set_facecolor('antiquewhite')
-    #plt.gcf().canvas.set_window_title("График")  # меняем заголовок
-    #plt.grid()  # выводим решётку (сетку)
-    #plt.title('График акций')
-    #plt.xlabel("Временной промежуток", fontsize=14, fontweight="bold")
-    #plt.ylabel("Стоимость акции", fontsize=14, fontweight="bold")
-    #plt.show()
+    df = pd.DataFrame(info_stocks(var1.get(), var2.get(), str(var3.get()), str(var4.get())),
+                      columns=list(info_stocks(var1.get(), var2.get(), str(var3.get()), str(var4.get()))))
+    df.plot(y=list(info_stocks(var1.get(), var2.get(),  str(var3.get()), str(var4.get())))).patch.set_facecolor('antiquewhite')
+    plt.gcf().canvas.set_window_title("Chart")  # меняем заголовок
+    plt.grid()  # выводим решётку (сетку)
+    plt.title('Stock chart of '+ var10.get())
+    plt.xlabel("Time interval", fontsize=14, fontweight="bold")
+    plt.ylabel("Stock value", fontsize=14, fontweight="bold")
+    plt.show()
     print(var1.get(), var2.get(), str(var3.get()), str(var4.get()))
-
-
-#print(info_stocks("Japan", "Food", "23/02/2020", "05/03/2020"))
-
 
 
 # Creating tkinter window
@@ -282,49 +277,3 @@ window.mainloop()
 
 
 
-window = Tk()
-window.title("Акации по акции")
-window.geometry('800x200')
-style = Style()
-style.theme_use('default')
-style.configure('TNotebook.Tab', background="greenyellow", font=('URW Gothic L','25','bold'))
-tab_control = ttk.Notebook(window) #, width=500, height=500
-tab1 = ttk.Frame(tab_control)
-tab2 = ttk.Frame(tab_control)
-tab_control.add(tab1, text='Получить данные')
-tab_control.add(tab2, text='Сравнить данные')
-
-lbl1 = Label(tab1, text='Здесь Вы можете получить данные по акциям крупных компаний выбранного типа '
-						'в выбранной стране в течении выбранного периода, которые будут представлены в виде графика.', font=("Arial Bold", 15), wraplength=800, justify="center")
-lbl1.grid(column=0, row=0)
-lbl2 = Label(tab2, text='Здесь Вы можете сравнить акции крупных компаний выбранного типа в двух выбранных '
-						'странах за выбранный период времени.', font=("Arial Bold", 15), wraplength=800, justify="center")
-lbl2.grid(column=0, row=0)
-
-
-tab3 = ttk.Frame(tab_control)
-lbl3 = Label(tab1, text='Страна:', font=("Arial Bold", 15))
-lbl3.grid(column=0, row=5)
-# Combobox creation
-n = tk.StringVar()
-monthchoosen = ttk.Combobox(window, width = 27, textvariable = n)
-
-# Adding combobox drop down list
-monthchoosen['values'] = (' January',
-						' February',
-						' March',
-						' April',
-						' May',
-						' June',
-						' July',
-						' August',
-						' September',
-						' October',
-						' November',
-						' December')
-
-monthchoosen.grid(column = 1, row = 5, padx = 10, pady = 25) #, padx = 10, pady = 25
-monthchoosen.pack(side="bottom")
-
-tab_control.pack(fill='both', side="top")
-window.mainloop()
