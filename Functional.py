@@ -69,9 +69,9 @@ def info_stocks(country: str, type: str, date_from: str, date_to: str):
         return dict_result
 
 
-def compare_stocks(country_1: str, country_2: str, type: str, date_from: str, date_to: str):
-    info_1 = info_stocks(country_1, type, date_from, date_to)
-    info_2 = info_stocks(country_2, type, date_from, date_to)
+def compare_stocks(country_1: str, country_2: str, typen: str, date_from: str, date_to: str):
+    info_1 = info_stocks(country_1, typen, date_from, date_to)
+    info_2 = info_stocks(country_2, typen, date_from, date_to)
     if info_1 == f"Date entered incorrectly":
         return f"Date entered incorrectly"
     elif info_1 == f"Unfortunately there are no companies of this type" and \
