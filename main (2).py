@@ -33,12 +33,16 @@ def info_stocks(country: str, type: str, date_from: str, date_to: str):
     tos = date_to.split("/")
     fro = date_from.split("/")
     if int(tos[2]) < 2012 or int(fro[2]) < 2012:
+        messagebox.showerror("Ошибка", "Дата введена неккоректно")
         return f"Date entered incorrectly"
     elif int(fro[2]) > int(tos[2]):
+        messagebox.showerror("Ошибка", "Дата введена неккоректно")
         return f"Date entered incorrectly"
     elif int(fro[2]) == int(tos[2]) and int(fro[1]) > int(tos[1]):
+        messagebox.showerror("Ошибка", "Дата введена неккоректно")
         return f"Date entered incorrectly"
     elif int(fro[2]) == int(tos[2]) and int(fro[1]) == int(tos[1]) and int(fro[0]) > int(tos[0]):
+        messagebox.showerror("Ошибка", "Дата введена неккоректно")
         return f"Date entered incorrectly"
     else:
         result = cursor.execute("select Code from Stocks where country=:code_count and type=:code_type",
@@ -99,9 +103,15 @@ def compare_stocks(country_1: str, country_2: str, type: str, date_from: str, da
         comp_1 = 0
         comp_2 = 0
         for i in info_1.keys():
-            comp_1 += round(statistics.mean(info_1[i]) * dict_transfer[dict_currency[country_1]], 2)
+            if type(info_1[i]) is dict:
+                comp_1 += round(statistics.mean(info_1[i].values()) * dict_transfer[dict_currency[country_1]], 2)
+            else:
+                comp_1 += round(statistics.mean(info_1[i]) * dict_transfer[dict_currency[country_1]], 2)
         for i in info_2.keys():
-            comp_2 += round(statistics.mean(info_2[i]) * dict_transfer[dict_currency[country_2]], 2)
+            if type(info_2[i]) is dict:
+                comp_2 += round(statistics.mean(info_2[i].values()) * dict_transfer[dict_currency[country_2]], 2)
+            else:
+                comp_2 += round(statistics.mean(info_2[i]) * dict_transfer[dict_currency[country_2]], 2)
         if comp_1 > comp_2:
             return f"The stocks of {country_1} are more beneficial than the stocks of {country_2}"
         elif comp_1 < comp_2:
@@ -115,11 +125,40 @@ def company_description(company: str):
     for row in result:
         return row[0]
 
-
-
-
 import tkinter as tk
 from tkinter import ttk
+
+
+def clicked4():
+    win = tk.Tk()
+    win.title('Информация о компаниях')
+    win.geometry('800x750')
+    win.configure(bg='paleturquoise')
+    n=1
+    for i in range(len(list(info_stocks(var10.get(), var20.get(), str(var30.get()), str(var40.get()))))):
+        ttk.Label(win,
+                  text=company_description(list(info_stocks(var10.get(), var20.get(), str(var30.get()), str(var40.get())))[i]),
+                  wraplength=800, justify="center", background='violet', foreground="white",
+                  font=("Times New Roman", 10)).grid(row=i, column=0)
+        n+=1
+    for i in range(len(list(info_stocks(var11.get(), var20.get(), str(var30.get()), str(var40.get()))))):
+        ttk.Label(win,
+                text=company_description(list(info_stocks(var11.get(), var20.get(), str(var30.get()), str(var40.get())))[i]),
+                wraplength=800, justify="center", background='violet', foreground="white",
+                font=("Times New Roman", 10)).grid(row=n+i, column=0)
+    wind.mainloop()
+
+def clicked3():
+    wind = tk.Tk()
+    wind.title('Информация о компаниях')
+    wind.geometry('800x750')
+    wind.configure(bg='paleturquoise')
+    for i in range(len(list(info_stocks(var1.get(), var2.get(), str(var3.get()), str(var4.get()))))):
+        ttk.Label(wind,
+                  text=company_description(list(info_stocks(var1.get(), var2.get(), str(var3.get()), str(var4.get())))[i]),
+                  wraplength=800, justify="center", background='violet', foreground="white",
+                  font=("Times New Roman", 15)).grid(row=i, column=0)
+    wind.mainloop()
 
 
 def clicked2():
@@ -206,7 +245,7 @@ var2['values'] = types
 var2.grid(column = 1, row = 2)
 var2.current()
 
-ttk.Label(frame1, text = "Введите первый день:",
+ttk.Label(frame1, text = "Введите первый день:\n(в формате дд/мм/гг)",
 		font = ("Times New Roman", 25), background = 'darkorange', foreground ="lavenderblush").grid(column = 0,
 		row = 3, padx = 10, pady = 25)
 v3 = StringVar()
@@ -220,7 +259,7 @@ v4 = StringVar()
 var4 = Entry(frame1, width = 20, textvariable = v4, font=("Times New Roman", 20))
 var4.grid(column = 1, row = 4)
 button1 = Button(frame1, text="Построить график",font = ("Times New Roman", 25), command=clicked1).grid(column = 1, row =5)
-
+button11 = Button(frame1, text="Информация о компаниях",font = ("Times New Roman", 25), command=clicked3).grid(column = 1, row =6)
 
 # frame2
 ttk.Label(frame2, text = 'Здесь Вы можете сравнить акции крупных компаний выбранного типа в двух выбранных странах за выбранный период времени.',
@@ -254,7 +293,7 @@ var20['values'] = types
 var20.grid(column = 1, row = 3)
 var20.current()
 
-ttk.Label(frame2, text = "Введите первый день:",
+ttk.Label(frame2, text = "Введите первый день:\n(в формате дд/мм/гг)",
 		font = ("Times New Roman", 25), background = 'darkorange', foreground ="lavenderblush").grid(column = 0,
 		row = 4, padx = 10, pady = 25)
 v30 = StringVar()
@@ -268,7 +307,7 @@ v40 = StringVar()
 var40 = Entry(frame2, width = 20, textvariable = v40, font=("Times New Roman", 20))
 var40.grid(column = 1, row = 5)
 button2 = Button(frame2, text="Построить график",font = ("Times New Roman", 25), command=clicked2).grid(column = 1, row =6)
-
+button22 = Button(frame2, text="Информация о компаниях",font = ("Times New Roman", 25), command=clicked4).grid(column = 1, row =7)
 
 
 
