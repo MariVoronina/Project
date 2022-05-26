@@ -92,9 +92,9 @@ def info_stocks(country: str, type: str, date_from: str, date_to: str):
 
 
 # функция для сравнения рыночных цен акций выбранного типа компаний в двух выбранных странах в течении выбранного периода времени
-def compare_stocks(country_1: str, country_2: str, type: str, date_from: str, date_to: str):
-    info_1 = info_stocks(country_1, type, date_from, date_to) # информация по акциям в первой стране
-    info_2 = info_stocks(country_2, type, date_from, date_to) # информация по акциям во второй стране
+def compare_stocks(country_1: str, country_2: str, typen: str, date_from: str, date_to: str):
+    info_1 = info_stocks(country_1, typen, date_from, date_to) # информация по акциям в первой стране
+    info_2 = info_stocks(country_2, typen, date_from, date_to) # информация по акциям во второй стране
     # проверка на неправильно введённую дату
     if info_1 == f"Date entered incorrectly":
         return f"Date entered incorrectly"
