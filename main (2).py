@@ -9,29 +9,31 @@ from tkinter.ttk import Notebook, Style
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import investpy
-import sqlite3
-import json
-import statistics
+import investpy # пакет, откуда получаем информацию по рыночным ценам акций
+import sqlite3 # модуль для работы с базой данных
+import json # модуль для работы типом json
+import statistics # модуль, в котором реализован метод mean()
 
 
 
-types = ["Banks", "Biotechnology", "Cars", "Hotels", "IT", "Entertainments", "Clothes", "Food"]
-countries = ["United States", "Russia", "China", "France", "Japan"]
+types = ["Banks", "Biotechnology", "Cars", "Hotels", "IT", "Entertainments", "Clothes", "Food"] # типы компаний
+countries = ["United States", "Russia", "China", "France", "Japan"] # названия стран
 dict_types = {"Banks": "1", "Biotechnology": "2", "Cars": "3", "Hotels": "4", "IT": "5", "Entertainments": "6",
-              "Clothes": "7", "Food": "8"}
-dict_countries = {"United States": "1", "Russia": "2", "China": "3", "France": "4", "Japan": "5"}
-dict_currency = {"United States": "USD", "Russia": "RUB", "China": "CNY", "France": "EUR", "Japan": "JPY"}
-dict_transfer = {"USD": 1, "RUB": 64.74, "CNY": 0.16, "EUR": 1.04, "JPY": 0.0078}
+              "Clothes": "7", "Food": "8"} # коды названий компаний, которые им присвоены в базе данных
+dict_countries = {"United States": "1", "Russia": "2", "China": "3", "France": "4", "Japan": "5"} # коды стран, которые им присвоены в базе данных
+dict_currency = {"United States": "USD", "Russia": "RUB", "China": "CNY", "France": "EUR", "Japan": "JPY"} # валюта каждой из наших стран
+dict_transfer = {"USD": 1, "RUB": 64.74, "CNY": 0.16, "EUR": 1.04, "JPY": 0.0078} # сколько долларов в единице данной валюты
 
 
-stocks = sqlite3.connect("C:\\Users\\Моя госпожа\\Desktop\\Питонище\\Stocks.s3db")
-cursor = stocks.cursor()
+stocks = sqlite3.connect("C:\\Users\\Моя госпожа\\Desktop\\Питонище\\Stocks.s3db") # соединение с базой данных
+cursor = stocks.cursor() # объект для работы с базой данных: формирования запросов поиска, добавления, удаления и т.д.
 
 
+# функция, которая возвращает информацию по рыночным ценам акций компаний выбранного типа в выбраной стране в течении выбранного периода времени
 def info_stocks(country: str, type: str, date_from: str, date_to: str):
     tos = date_to.split("/")
     fro = date_from.split("/")
+    # проверка на правильность ввода даты
     if int(tos[2]) < 2012 or int(fro[2]) < 2012:
         messagebox.showerror("Ошибка", "Дата введена неккоректно")
         return f"Date entered incorrectly"
@@ -45,12 +47,14 @@ def info_stocks(country: str, type: str, date_from: str, date_to: str):
         messagebox.showerror("Ошибка", "Дата введена неккоректно")
         return f"Date entered incorrectly"
     else:
+	# формирование запроса по выбору из базы данных из поля Code компаний, у которых страна и тип совпадают с выбранными	
         result = cursor.execute("select Code from Stocks where country=:code_count and type=:code_type",
                                 {"code_count": dict_countries[country], "code_type": dict_types[type]})
-        dict_result = {}
+        dict_result = {} # наш будущий результат
         for row in result:
             info = json.loads(investpy.get_stock_historical_data(stock=row[0], country=country, from_date=date_from,
-                                to_date=date_to, as_json=True))
+                                to_date=date_to, as_json=True)) # получаем информацию в формате json и преобразуем в словарь
+	    # формируем словарь для красивого вывода графика
             if int(tos[2]) - int(fro[2]) == 0:
                 if int(tos[1]) - int(fro[1]) == 0:
                     dict_result[info["name"]] = {}
@@ -68,6 +72,7 @@ def info_stocks(country: str, type: str, date_from: str, date_to: str):
                     for pr in info["historical"]:
                         list_result.append(pr["close"])
                     dict_result[info["name"]] = list_result
+	    # формируем словарь для большого периода
             elif int(fro[1]) == 12 and int(tos[1]) == 1 and int(tos[2]) - int(fro[2]) == 1:
                 dict_result[info["name"]] = {}
                 for pr in info["historical"]:
@@ -80,16 +85,20 @@ def info_stocks(country: str, type: str, date_from: str, date_to: str):
                 for pr in info["historical"]:
                     list_result.append(pr["close"])
                 dict_result[info["name"]] = list_result
+	# проверка на отсутствие информации	
         if dict_result == {}:
             return f"Unfortunately there are no companies of this type"
-        return dict_result
+        return dict_result # возвращаем результат
 
 
+# функция для сравнения рыночных цен акций выбранного типа компаний в двух выбранных странах в течении выбранного периода времени
 def compare_stocks(country_1: str, country_2: str, type: str, date_from: str, date_to: str):
-    info_1 = info_stocks(country_1, type, date_from, date_to)
-    info_2 = info_stocks(country_2, type, date_from, date_to)
+    info_1 = info_stocks(country_1, type, date_from, date_to) # информация по акциям в первой стране
+    info_2 = info_stocks(country_2, type, date_from, date_to) # информация по акциям во второй стране
+    # проверка на неправильно введённую дату
     if info_1 == f"Date entered incorrectly":
         return f"Date entered incorrectly"
+    # проверка на отсутствие информации
     elif info_1 == f"Unfortunately there are no companies of this type" and \
             not info_2 == f"Unfortunately there are no companies of this type":
         return f"The stocks of {country_2} are more beneficial"
@@ -100,18 +109,21 @@ def compare_stocks(country_1: str, country_2: str, type: str, date_from: str, da
             info_2 == f"Unfortunately there are no companies of this type":
         return f"Unfortunately there are no companies of this type"
     else:
-        comp_1 = 0
-        comp_2 = 0
+        comp_1 = 0 # будущий результат в первой стране
+        comp_2 = 0 # будущий результат во второй стране
+	# высчитываем среднее арифметическое по всем рыночным ценам акций в первой стране
         for i in info_1.keys():
             if type(info_1[i]) is dict:
                 comp_1 += round(statistics.mean(info_1[i].values()) * dict_transfer[dict_currency[country_1]], 2)
             else:
                 comp_1 += round(statistics.mean(info_1[i]) * dict_transfer[dict_currency[country_1]], 2)
+	# высчитываем среднее арифметическое по всем рыночным ценам акций во второй стране	
         for i in info_2.keys():
             if type(info_2[i]) is dict:
                 comp_2 += round(statistics.mean(info_2[i].values()) * dict_transfer[dict_currency[country_2]], 2)
             else:
                 comp_2 += round(statistics.mean(info_2[i]) * dict_transfer[dict_currency[country_2]], 2)
+	# сравнение и выдача окончательного результата	
         if comp_1 > comp_2:
             return f"The stocks of {country_1} are more beneficial than the stocks of {country_2}"
         elif comp_1 < comp_2:
@@ -120,8 +132,11 @@ def compare_stocks(country_1: str, country_2: str, type: str, date_from: str, da
             return f"The stocks of both countries are beneficial"
 
 
+# функция, возвращающая профиль компании
 def company_description(company: str):
+    # формирование запроса по поиску в базе данных такой компании	
     result = cursor.execute("select Description from Stocks where Name=:company", {"company": company})
+    # передвигаемся по выбранным строкам и возвращаем описание	
     for row in result:
         return row[0]
 
