@@ -284,7 +284,7 @@ ttk.Label(frame2, text = "Enter the end of the period:\n(in the format dd/mm/yyy
 v40 = StringVar()
 var40 = Entry(frame2, width = 20, textvariable = v40, font=("Times New Roman", 20))
 var40.grid(column = 1, row = 5)
-button2 = Button(frame2, text="Построить график",font = ("Times New Roman", 25), background="sienna", foreground ='linen',
+button2 = Button(frame2, text="Draw a graph",font = ("Times New Roman", 25), background="sienna", foreground ='linen',
                  command=clicked2).grid(column = 1, row =6) #кнопка для построеня двух графиков по введенным данным
 
 
