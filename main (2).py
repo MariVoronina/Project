@@ -15,7 +15,6 @@ import json # модуль для работы типом json
 import statistics # модуль, в котором реализован метод mean()
 
 
-
 types = ["Banks", "Biotechnology", "Cars", "Hotels", "IT", "Entertainments", "Clothes", "Food"] # типы компаний
 countries = ["United States", "Russia", "China", "France", "Japan"] # названия стран
 dict_types = {"Banks": "1", "Biotechnology": "2", "Cars": "3", "Hotels": "4", "IT": "5", "Entertainments": "6",
@@ -25,9 +24,9 @@ dict_currency = {"United States": "USD", "Russia": "RUB", "China": "CNY", "Franc
 dict_transfer = {"USD": 1, "RUB": 64.74, "CNY": 0.16, "EUR": 1.04, "JPY": 0.0078} # сколько долларов в единице данной валюты
 
 
-
 stocks = sqlite3.connect("C:\\stocks\\Stocks.s3db") # соединение с базой данных
 cursor = stocks.cursor() # объект для работы с базой данных: формирования запросов поиска, добавления, удаления и т.д.
+
 
 # функция, которая возвращает информацию по рыночным ценам акций компаний выбранного типа в выбраной стране в течении выбранного периода времени
 def info_stocks(country: str, type: str, date_from: str, date_to: str):
@@ -93,6 +92,7 @@ def info_stocks(country: str, type: str, date_from: str, date_to: str):
             return f"Unfortunately there are no companies of this type"
         return dict_result # возвращаем результат
 
+
 # функция для сравнения рыночных цен акций выбранного типа компаний в двух выбранных странах в течении выбранного периода времени
 def compare_stocks(country_1: str, country_2: str, typen: str, date_from: str, date_to: str):
     info_1 = info_stocks(country_1, typen, date_from, date_to)
@@ -154,6 +154,7 @@ def clicked1():
     plt.ylabel("Stock value, "+ dict_currency[var1.get()], fontsize=14, fontweight="bold") # выводим подпись оси Y
     plt.show() # выводим график
 
+
 # функция, выводящая графики акций каждой из двух заданных стран для сравнения
 def clicked2():
     df1 = pd.DataFrame(info_stocks(var10.get(), var20.get(), str(var30.get()), str(var40.get())),
@@ -177,6 +178,7 @@ def clicked2():
     messagebox.showinfo('Summary', compare_stocks(var10.get(), var11.get(), var20.get(), str(var30.get()), str(var40.get())))
     # выводим сообщение о том, акции какой страны в среднем выгоднее
 
+
 # функция, выводящая окно с информацией о компаниях
 def clicked3():
     wind = tk.Tk() # создаем окно
@@ -191,7 +193,6 @@ def clicked3():
                   font=("Times New Roman", 20)).grid(row=i, column=0)
 
     wind.mainloop()
-
 
 
 window = tk.Tk()
@@ -220,7 +221,6 @@ var1['values'] = countries # в качестве сроковых данных �
 var1.grid(column = 1, row = 1) # расположение в окне
 var1.current()
 
-
 ttk.Label(frame1, text = "Choose the type of company:", font = ("Times New Roman", 25), background = 'linen',foreground ="sienna").grid(column = 0,
 		row = 2, padx = 10, pady = 25)
 v2 = StringVar()
@@ -246,6 +246,7 @@ button1 = Button(frame1, text="Draw a graph", font = ("Times New Roman", 25),
 
 button11 = Button(frame1, text="Information about companies",font = ("Times New Roman", 25), background="sienna", foreground ='linen',
                   command=clicked3).grid(column = 1, row =6) #кнопка для получения информации о компаниях
+
 
 # frame2
 ttk.Label(frame2, text = "Сhoose the first country:", font = ("Times New Roman", 25), background = 'linen', foreground ="sienna").grid(column = 0,
@@ -286,8 +287,6 @@ var40.grid(column = 1, row = 5)
 button2 = Button(frame2, text="Построить график",font = ("Times New Roman", 25), background="sienna", foreground ='linen',
                  command=clicked2).grid(column = 1, row =6) #кнопка для построеня двух графиков по введенным данным
 
+
 note.pack(expand= True, fill=BOTH)
 window.mainloop()
-
-
-
